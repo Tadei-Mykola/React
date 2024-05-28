@@ -1,0 +1,18 @@
+
+.delete-confirmation-modal {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  button {
+    border: 0;
+  }
+
+  .yes {
+    background-color: red;
+  }
+
+  .no {
+    color: red;
+  }
+}
