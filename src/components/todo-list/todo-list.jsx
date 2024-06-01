@@ -1,21 +1,28 @@
 
 import { useEffect, useState } from 'react';
 import './todo-list.scss';
-import { LocalStorageService } from '../../services/localStorage.service';
 import { TodoItem } from '../todo-item/todo-item';
+import { TodoService } from '../../services/todo.service';
 
-const localStorageService = new LocalStorageService()
-
+const todoService = new TodoService()
 export function TodoList({todoItem}) {
   const [todoList, setTodoList] = useState([]);
-  const deleteTodoItem = (item) => {
-    setTodoList(todoList.filter(item1 => item1.text !== item.text));
+
+  const deleteTodoItem = async (id) => {
+    todoService.deleteTodoById(id)
+    setTodoList(todoList.filter((item) => item.id !== id));
+    
   };
+
   useEffect(() => {
-    const data = localStorageService.getArray('todoList');
-    if (data) {
-      setTodoList(data);
-    }
+    const fetchTodos = async () => {
+      const data = await todoService.getTodos();
+      if (data) {
+        setTodoList(data);
+      }
+    };
+
+    fetchTodos();
   }, []);
 
   useEffect(() => {
@@ -26,8 +33,8 @@ export function TodoList({todoItem}) {
 
   return (
     <div className="todo-list">
-      {todoList.map((todo, index) => (
-        <TodoItem key={index} todoItem={todo} deleteTodoItem={deleteTodoItem}/>
+      {todoList.map((todo) => (
+        <TodoItem key={todo.id} todoItem={todo} deleteTodoItem={deleteTodoItem}/>
       ))}
     </div>
   );
