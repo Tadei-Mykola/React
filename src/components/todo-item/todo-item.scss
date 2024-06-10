@@ -1,0 +1,42 @@
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .edit-button {
+        height: 100px;
+        width: 50px;
+      }
+    }
+
+    .done-button,
+    .delete-button,
+    .edit-button {
+      height: 50px;
+      width: 50px;
+      background-color: gainsboro;
+      font-size: 24px;
+      border: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  
+    .done-button {
+      color: green;
+    }
+  
+    .delete-button {
+      color: red;
+    }
+  }
+  
