@@ -1,39 +1,44 @@
 
 import './todo-item.scss';
 import { useState } from 'react';
-import { DeleteConfirmationModal } from '../delete-confirmation-modal/delete-confirmation-modal';
-import { TodoService } from '../../services/todo.service';
+import { DeleteConfirmationModal } from '../delete-confirmation-modal/confirmation-modal';
+import { useDispatch } from 'react-redux';
+import { deleteTodoAsync, updateTodoAsync } from '../../store/storeActions/todoAction';
 
-const todoService = new TodoService()
-
-export function TodoItem({todoItem, deleteTodoItem}) {
-  const [item, setItem] = useState(todoItem);
+export function TodoItem(props) {
+  const [todo, setTodo] = useState(props.todo)
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  function deleteItem() {
-    deleteTodoItem(item.id)
-    closeModal()
+  const [isEditMode, setIsEditMode] = useState(false)
+  const dispatch = useDispatch()
+  
+  const deleteItem = () => {
+    dispatch(deleteTodoAsync(todo.id))
+    setModalIsOpen(false)
   }
 
-  async function changeToDone() { 
-    setItem((await todoService.updateTodoToDone(item.id, {isDone: true})).data);
+  const changeToDone = () => { 
+    dispatch(updateTodoAsync({...todo, isDone: true}))
   }
 
-  function openModal() {
-    setModalIsOpen(true);
-  }
-
-  function closeModal() {
-    setModalIsOpen(false);
+  const changeName = () => {
+    dispatch(updateTodoAsync(todo))
+    setIsEditMode(false)
   }
 
   return (
-    <div className='todo-item' style={{ backgroundColor: item.isDone ? 'green' : '' }}>
-      <h1 className='todo-text'>{item.name}</h1>
-      <div>
-        <button className='done-button' onClick={changeToDone}>&#10003;</button>
-        <button className='delete-button' onClick={openModal}>&#x2715;</button>
-        <DeleteConfirmationModal isOpen={modalIsOpen} onClose={closeModal} onDelete={deleteItem} />
+    <div className='todo-item' style={{ backgroundColor: todo.isDone ? 'green' : '' }}>
+      {
+        !isEditMode ? <h1>{todo.name}</h1> : 
+        <input className='todo-text' value={todo.name} onChange={(event) => setTodo((prev) => ({...prev, name: event.target.value}))}></input>
+      }
+
+      <div className='button-group'>
+        <button className='edit-button' onClick={() => { return isEditMode ? changeName(): setIsEditMode(true)}}>{ isEditMode ? '\u2713' : '\u270F' }</button>
+        <div>
+          <button className='done-button' onClick={changeToDone} disabled={todo.isDone}>&#10003;</button>
+          <button className='delete-button' onClick={() => setModalIsOpen(true)}>&#x2715;</button>
+        </div>
+        <DeleteConfirmationModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} onDelete={deleteItem} />
       </div>
     </div>
   );

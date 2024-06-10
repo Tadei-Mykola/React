@@ -1,4 +1,4 @@
-import './delete-confirmation-modal.scss';
+import './confirmation-modal.scss';
 import Modal from 'react-modal';
 
 export function DeleteConfirmationModal({ isOpen, onClose, onDelete }) {
@@ -10,7 +10,7 @@ export function DeleteConfirmationModal({ isOpen, onClose, onDelete }) {
         margin: 'auto'
       }
     }}>
-      <div className="delete-confirmation-modal" >
+      <div className="confirmation-modal" >
         <h2>Ви дійсно хочете видалити задачу?</h2>
         <div>
           <button className='yes' onClick={onDelete}>Yes</button>

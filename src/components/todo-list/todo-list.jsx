@@ -1,41 +1,50 @@
 
-import { useEffect, useState } from 'react';
 import './todo-list.scss';
 import { TodoItem } from '../todo-item/todo-item';
-import { TodoService } from '../../services/todo.service';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { getTodoAsync } from '../../store/storeActions/todoAction';
+import { useEffect, useState } from 'react';
+import { InfinitySpin } from 'react-loader-spinner';
+import CustomAlert from '../../pop-up/customAlert'
 
-const todoService = new TodoService()
-export function TodoList({todoItem}) {
-  const [todoList, setTodoList] = useState([]);
+export function TodoList() {
+  const todos = useSelector((state) => state.todos.items);
+  const [isOpenCustomAlert, setIsOpenCustomAlert] = useState(false)
+  const { loading, message, severity } = useSelector((state) => state.todos);
+  const dispatch = useDispatch()
 
-  const deleteTodoItem = async (id) => {
-    todoService.deleteTodoById(id)
-    setTodoList(todoList.filter((item) => item.id !== id));
-    
-  };
+  useEffect((() => {
+    dispatch(getTodoAsync())
+  }),[])
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      const data = await todoService.getTodos();
-      if (data) {
-        setTodoList(data);
-      }
-    };
+  useEffect((() => {
+    if (message) {
+      setIsOpenCustomAlert(true);
+      const timer = setTimeout(() => {
+        setIsOpenCustomAlert(false);
+      }, 3000);
 
-    fetchTodos();
-  }, []);
-
-  useEffect(() => {
-    if (Object.keys(todoItem).length !== 0) {
-      setTodoList((prevList) => [...prevList, todoItem]);
+      return () => clearTimeout(timer);
     }
-  }, [todoItem]);
+  }),[message])
 
   return (
     <div className="todo-list">
-      {todoList.map((todo) => (
-        <TodoItem key={todo.id} todoItem={todo} deleteTodoItem={deleteTodoItem}/>
+      {todos.map((todo) => (
+        <TodoItem key={todo.id} todo={todo}/>  
       ))}
+      <div style={{margin:'auto', display:'flex', justifyContent:'center'}}>
+        {loading &&
+          <InfinitySpin
+          visible={true}
+          width="200"
+          color="#4fa94d"
+          ariaLabel="infinity-spin-loading"   
+          />
+        }
+      </div>
+     {isOpenCustomAlert && <CustomAlert message={message} severity={severity}/>}
     </div>
   );
 }

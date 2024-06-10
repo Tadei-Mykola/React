@@ -13,8 +13,9 @@ export class TodoService {
         return response.data;
     }
 
-    updateTodoToDone(id, data) {
-        return axios.patch(`${defaultUrl}todo/updateTodoToDone/${id}`, data)
+    async updateTodo(id, data) {
+        const response = await axios.patch(`${defaultUrl}todo/updateTodo/${id}`, data)
+        return response.data;
     }
 
     deleteTodoById(id) {

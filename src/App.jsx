@@ -1,23 +1,16 @@
 import './App.scss'
-import {CreateTodoItem} from './components/create-todo-item/create-todo-item.jsx'
+import {CreateTodo} from './components/create-todo-item/create-todo.jsx'
 import {TodoList} from './components/todo-list/todo-list.jsx'
-import { useState } from 'react';
-import { TodoService } from './services/todo.service';
+import  store  from './store/store.js';
+import { Provider } from 'react-redux';
 
-const todoService = new TodoService()
 export default function App() {
 
-  const [todoItem, setTodoItem] = useState({});
-
-  const addTodoItem = async (todoItem) => {
-    const newTodo = await todoService.createNewTodo(todoItem)
-    setTodoItem(newTodo);
-  };
 
   return ( 
-   <>
-      <CreateTodoItem onAddItem={addTodoItem} />
-      <TodoList todoItem={todoItem} />
-   </>
+   <Provider store={store}>
+      <CreateTodo/>
+      <TodoList/>
+   </Provider>
   );
 }
