@@ -46,7 +46,7 @@ export const todoSlice = createSlice({
       },
       updateTodoSuccess: (state, action) => {
         state.loading = false;
-        state.items = [...state.items.map(item => item.id != action.payload.id ? item : action.payload)];
+        state.items = state.items.map(item => item.id !== action.payload.id ? item : action.payload);
         state.message = 'Задачу успішно оновлено';
         state.severity = 'success'
       },

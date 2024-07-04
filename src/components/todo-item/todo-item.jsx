@@ -1,6 +1,6 @@
 
 import './todo-item.scss';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DeleteConfirmationModal } from '../delete-confirmation-modal/confirmation-modal';
 import { useDispatch } from 'react-redux';
 import { deleteTodoAsync, updateTodoAsync } from '../../store/storeActions/todoAction';
@@ -10,6 +10,10 @@ export function TodoItem(props) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    setTodo(props.todo);
+  }, [props.todo]);
   
   const deleteItem = () => {
     dispatch(deleteTodoAsync(todo.id))
@@ -31,7 +35,6 @@ export function TodoItem(props) {
         !isEditMode ? <h1>{todo.name}</h1> : 
         <input className='todo-text' value={todo.name} onChange={(event) => setTodo((prev) => ({...prev, name: event.target.value}))}></input>
       }
-
       <div className='button-group'>
         <button className='edit-button' onClick={() => { return isEditMode ? changeName(): setIsEditMode(true)}}>{ isEditMode ? '\u2713' : '\u270F' }</button>
         <div>
