@@ -1,6 +1,6 @@
 import Alert from '@mui/material/Alert';
 
-export default function CustomAlert ({ message, severity }) {
+export function CustomAlert ({ message, severity }) {
   return (
     <Alert 
       style={{

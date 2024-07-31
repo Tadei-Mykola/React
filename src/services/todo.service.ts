@@ -3,6 +3,10 @@ const defaultUrl = "http://localhost:3000/"
 
 export class TodoService {
 
+    autoSetStatus = (loading = false, message = null, severity = null) => {
+        return { loading, message, severity };
+    }
+
     async createNewTodo(todo) {
         const response = await axios.post(`${defaultUrl}todo/createTodo`, todo);
         return response.data;

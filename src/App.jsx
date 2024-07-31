@@ -1,16 +1,18 @@
 import './App.scss'
-import {CreateTodo} from './components/create-todo-item/create-todo.jsx'
-import {TodoList} from './components/todo-list/todo-list.jsx'
-import  store  from './store/store.js';
-import { Provider } from 'react-redux';
+import { CreateTodo, TodoList } from './components/index.js';
+import { StatusProvider } from './hooks/index.js';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 export default function App() {
 
 
   return ( 
-   <Provider store={store}>
-      <CreateTodo/>
-      <TodoList/>
-   </Provider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <StatusProvider>
+        <CreateTodo/>
+        <TodoList/>
+      </StatusProvider>
+    </LocalizationProvider>
   );
 }

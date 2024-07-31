@@ -1,25 +1,30 @@
 
-import './todo-list.scss';
-import { TodoItem } from '../todo-item/todo-item';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { getTodoAsync } from '../../store/storeActions/todoAction';
+import './todoList.scss';
+import { TodoItem } from '../todoItem/todoItem';
 import { useEffect, useState } from 'react';
 import { InfinitySpin } from 'react-loader-spinner';
-import CustomAlert from '../../pop-up/customAlert'
+import { CustomAlert } from '../../UI'
+import { TodoService } from '../../services';
+import { useStatus } from '../../hooks';
 
+const todoService = new TodoService()
 export function TodoList() {
-  const todos = useSelector((state) => state.todos.items);
+  const {status, setStatus, todos, setTodos } = useStatus()
   const [isOpenCustomAlert, setIsOpenCustomAlert] = useState(false)
-  const { loading, message, severity } = useSelector((state) => state.todos);
-  const dispatch = useDispatch()
 
   useEffect((() => {
-    dispatch(getTodoAsync())
+    setStatus(todoService.autoSetStatus(true));
+    todoService.getTodos().then(data => {
+      setStatus(todoService.autoSetStatus(false));
+        setTodos(data);
+     })
+     .catch (error => {
+      setStatus(todoService.autoSetStatus(false, error.message, 'error'))
+    })
   }),[])
 
   useEffect((() => {
-    if (message) {
+    if (status.message) {
       setIsOpenCustomAlert(true);
       const timer = setTimeout(() => {
         setIsOpenCustomAlert(false);
@@ -27,7 +32,7 @@ export function TodoList() {
 
       return () => clearTimeout(timer);
     }
-  }),[message])
+  }),[status.message])
 
   return (
     <div className="todo-list">
@@ -35,7 +40,7 @@ export function TodoList() {
         <TodoItem key={todo.id} todo={todo}/>  
       ))}
       <div style={{margin:'auto', display:'flex', justifyContent:'center'}}>
-        {loading &&
+        {status.loading &&
           <InfinitySpin
           visible={true}
           width="200"
@@ -44,7 +49,7 @@ export function TodoList() {
           />
         }
       </div>
-     {isOpenCustomAlert && <CustomAlert message={message} severity={severity}/>}
+     {isOpenCustomAlert && <CustomAlert message={status.message} severity={status.severity}/>}
     </div>
   );
 }

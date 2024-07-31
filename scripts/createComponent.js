@@ -22,7 +22,7 @@ const toPascalCase = (str) => {
 
 const componentPascalCaseName = toPascalCase(componentName);
 
-const componentDir = join(__dirname, '../src', 'components', componentName);
+const componentDir = join(__dirname, '../src', 'components', componentPascalCaseName);
 
 const jsxTemplate = `
 import './${componentName}.scss';
@@ -44,7 +44,7 @@ const scssTemplate = `
 `;
 
 mkdirSync(componentDir, { recursive: true });
-writeFileSync(join(componentDir, `${componentName}.jsx`), jsxTemplate);
-writeFileSync(join(componentDir, `${componentName}.scss`), scssTemplate);
+writeFileSync(join(componentDir, `${componentPascalCaseName}.jsx`), jsxTemplate);
+writeFileSync(join(componentDir, `${componentPascalCaseName}.scss`), scssTemplate);
 
 console.log(`Компонент ${componentPascalCaseName} створено в ${componentDir}`);
