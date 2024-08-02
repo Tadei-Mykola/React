@@ -1,0 +1,35 @@
+.create-todo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    height: 100px;
+
+    border: 1px solid black;
+    
+    .field {
+        display: flex;
+        flex-direction: column;
+
+        label {
+            height: 20px;
+        }
+
+        input {
+            height: 30px;
+        }
+    }
+
+    button {
+        height: 50px;
+        width: 50px;
+        background-color: greenyellow;
+        color: green;
+        font-size: 24px;
+        border: 0;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
