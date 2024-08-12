@@ -1,9 +1,9 @@
 
 import './todoItem.scss';
 import { useState, useEffect } from 'react';
-import { ConfirmationModal } from '../../UI';
-import { TodoService } from '../../services';
-import { useStatus } from '../../hooks';
+import { ConfirmationModal } from '@UI';
+import { TodoService } from '@services';
+import { useStatus } from '@hooks';
 
 const todoService = new TodoService()
 export function TodoItem(props) {
@@ -76,7 +76,7 @@ export function TodoItem(props) {
           <button className='done-button' onClick={changeToDone} disabled={todo.isDone || isExpired}>&#10003;</button>
           <button className='delete-button' onClick={() => setModalIsOpen(true)}>&#x2715;</button>
         </div>
-        <ConfirmationModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} onDelete={deleteTodo} text={"Ви дійсно хочете видалити дію"} isDelete={true}/>
+        <ConfirmationModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} onConfirm={deleteTodo} text={"Ви дійсно хочете видалити дію"} isDelete={true}/>
       </div>
     </div>
   );

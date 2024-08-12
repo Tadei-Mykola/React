@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../interseptor";
 const defaultUrl = "http://localhost:3000/"
 
 export class TodoService {
@@ -8,21 +8,21 @@ export class TodoService {
     }
 
     async createNewTodo(todo) {
-        const response = await axios.post(`${defaultUrl}todo/createTodo`, todo);
+        const response = await axiosInstance.post(`${defaultUrl}todo/createTodo`, todo);
         return response.data;
     }
 
-    async getTodos() {
-        const response = await axios.get(`${defaultUrl}todo/`);
+    async getTodos(page, limit) {
+        const response = await axiosInstance.get(`${defaultUrl}todo/`, {params: {page, limit}});
         return response.data;
     }
 
     async updateTodo(id, data) {
-        const response = await axios.patch(`${defaultUrl}todo/updateTodo/${id}`, data)
+        const response = await axiosInstance.patch(`${defaultUrl}todo/updateTodo/${id}`, data)
         return response.data;
     }
 
     deleteTodoById(id) {
-        return axios.delete(`${defaultUrl}todo/deleteTodo/${id}`)
+        return axiosInstance.delete(`${defaultUrl}todo/deleteTodo/${id}`)
     }
 }

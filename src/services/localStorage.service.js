@@ -1,22 +1,22 @@
+import { jwtDecode } from "jwt-decode";
+
 export class LocalStorageService {
-    getItem(key) {
-        return localStorage.getItem(key)
+    setAccessToken(token) {
+        const decodedToken = jwtDecode(token);
+        localStorage.setItem('userData', JSON.stringify(decodedToken));
+        localStorage.setItem('accessToken', token);
     }
 
-    setArray(key, data, action = 'set') {
-        let arr = this.getArray(key) || []
-
-        if (action === 'set') {
-            arr.push(data)
-        } else if (action === 'change') {
-            arr = arr.map(item => item.text == data.text ? data : item)
-        } else {
-            arr = arr.filter(item => item.text !== data.text)
-        }
-        localStorage.setItem(key, JSON.stringify(arr))
+    getAccessKey() {
+        return localStorage.getItem('accessToken');
     }
 
-    getArray(key) {
-        return JSON.parse(this.getItem(key))   
+    getUserData() {
+        return JSON.parse(localStorage.getItem('userData')) 
+    }
+
+    removeUser() {
+        localStorage.removeItem('userData');
+        localStorage.removeItem('accessToken');
     }
 }

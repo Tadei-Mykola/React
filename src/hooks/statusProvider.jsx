@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext } from 'react';
 
 const StatusContext = createContext();
 
@@ -11,7 +11,6 @@ export function StatusProvider ({ children }) {
     severity: ""
   });
   const [todos, setTodos] = useState([])
-  useEffect(()=>{console.log(StatusContext)},[])
   return (
     <StatusContext.Provider value={{ status, setStatus, todos, setTodos }}>
       {children}

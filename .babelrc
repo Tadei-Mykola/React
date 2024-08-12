@@ -1,0 +1,15 @@
+{
+    "plugins": [
+      ["module-resolver", {
+        "root": ["./src"],
+        "alias": {
+          "@components": "./src/components/index.js",
+          "@services": "./src/services/index.js",
+          "@hooks": "./src/hooks/index.js",
+          "@UI": "./src/UI/index.js",
+          "@assets": "./src/assets"
+        }
+      }]
+    ]
+  }
+  

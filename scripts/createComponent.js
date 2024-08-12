@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const componentName = process.argv[2];
+const componentPath = process.argv[3] || '';
 
 if (!componentName) {
   console.error('Будь ласка, вкажіть ім’я компонента');
@@ -19,13 +20,13 @@ const toPascalCase = (str) => {
     .join('');
 };
 
-
 const componentPascalCaseName = toPascalCase(componentName);
+const lowerComponentPascalCaseName = componentPascalCaseName.charAt(0).toLowerCase() + componentPascalCaseName.slice(1);
 
-const componentDir = join(__dirname, '../src', 'components', componentPascalCaseName);
+const componentDir = join(__dirname, '../src', 'components', componentPath, lowerComponentPascalCaseName);
 
 const jsxTemplate = `
-import './${componentName}.scss';
+import './${lowerComponentPascalCaseName}.scss';
 
 export function ${componentPascalCaseName}() {
   return (
@@ -44,7 +45,7 @@ const scssTemplate = `
 `;
 
 mkdirSync(componentDir, { recursive: true });
-writeFileSync(join(componentDir, `${componentPascalCaseName}.jsx`), jsxTemplate);
-writeFileSync(join(componentDir, `${componentPascalCaseName}.scss`), scssTemplate);
+writeFileSync(join(componentDir, `${lowerComponentPascalCaseName}.jsx`), jsxTemplate);
+writeFileSync(join(componentDir, `${lowerComponentPascalCaseName}.scss`), scssTemplate);
 
 console.log(`Компонент ${componentPascalCaseName} створено в ${componentDir}`);
