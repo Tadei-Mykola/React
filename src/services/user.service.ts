@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "../interseptor";
 const defaultUrl = "http://localhost:3000/"
 
 export class UserService {
@@ -13,5 +14,10 @@ export class UserService {
 
     registration(data) {
         return axios.post(`${defaultUrl}user/`, data)
+    }
+
+    async getUserData() {
+        const response = await axiosInstance.get(`${defaultUrl}user/getUser`)
+        return response.data
     }
 }

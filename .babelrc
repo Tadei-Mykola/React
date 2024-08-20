@@ -7,7 +7,8 @@
           "@services": "./src/services/index.js",
           "@hooks": "./src/hooks/index.js",
           "@UI": "./src/UI/index.js",
-          "@assets": "./src/assets"
+          "@assets": "./src/assets",
+          "@shemas": "./src/schemas/index.js"
         }
       }]
     ]

@@ -39,7 +39,6 @@ export function TodoList() {
       setStatus(todoService.autoSetStatus(false, error.message, 'error'))
     })
   }
-
   return (
     <div className="todo-list">
       <InfiniteScroll

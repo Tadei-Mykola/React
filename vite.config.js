@@ -11,7 +11,8 @@ export default defineConfig({
     "@services": path.resolve(__dirname, 'src/services/index.js'),
     "@hooks": path.resolve(__dirname, 'src/hooks/index.js'),
     "@UI": path.resolve(__dirname, 'src/UI/index.js'),
-    "@assets": path.resolve(__dirname, 'src/assets')
+    "@assets": path.resolve(__dirname, 'src/assets'),
+    "@schemas": path.resolve(__dirname, "src/schemas/index.js")
     }
   }
 })

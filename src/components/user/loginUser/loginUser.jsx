@@ -3,17 +3,11 @@ import './loginUser.scss';
 import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
+import { FormInput } from "@UI"
 import { UserService, LocalStorageService } from '@services';
 import { useUser } from '@hooks'
 import { useNavigate } from 'react-router-dom';
-
-const schema = yup
-.object({
-  login: yup.string().required(),
-  password: yup.string().min(6).required(),
-})
-.required()
+import { loginSchema } from '@schemas';
 
 const userService = new UserService()
 const localStorageService = new LocalStorageService()
@@ -23,20 +17,25 @@ export function LoginUser({setErrorMessage}) {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(loginSchema),
   })
   const { setUser } = useUser()
   const navigate = useNavigate();
   const login = (data) => {
-    userService.login(data.login, data.password).then((response) => {
+    userService.login(data.login, data.password).then(async (response) => {
       localStorageService.setAccessToken(response.data.access_token)
-      setUser(localStorageService.getUserData())
+      setUser(await userService.getUserData())
       navigate('/todo')
     })
    .catch((error) => {
     setErrorMessage(error.response.data.message)
    })
   }
+
+  const formFields = [
+    { label: 'Номер телефону або пошта', name: 'login' },
+    { label: 'Пароль', name: 'password' },
+  ];
 
   return (
     <div className="login-user">
@@ -46,13 +45,16 @@ export function LoginUser({setErrorMessage}) {
       </div>
 
       <div className="login">
-        <form onSubmit={handleSubmit(login)}>
-          <label htmlFor="login">Номер телефону або пошта</label>
-          <input name='login' {...register("login")} />
-          <p>{errors.login?.message}</p>
-          <label htmlFor="password">Пароль</label>
-          <input name='password' {...register("password")} />
-          <p>{errors.password?.message}</p>
+        <form onSubmit={handleSubmit(login)}>   
+          {formFields.map((field) => (
+            <FormInput
+              key={field.name}
+              label={field.label}
+              name={field.name}
+              register={register}
+              error={errors[field.name]}
+            />
+          ))}
           <button type="submit">Увійти</button>
         </form>
       </div>

@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import './App.scss'
 import { Todo, User, Header } from '@components';
-import { UserProvider } from '@hooks';
+import { UserProvider, PrivateUserRoute } from '@hooks';
 
 export default function App() {
 
@@ -11,7 +11,10 @@ export default function App() {
       <Header/>
       <Routes>
         <Route path='/' element={<div>Welcome Home</div>} />
-        <Route path='/todo' element={<Todo/>}/>
+
+        <Route path="/todo" element={<PrivateUserRoute />}>
+          <Route path="" element={<Todo />} />
+        </Route>
         <Route path='/user/*' element={<User/>}/>
       </Routes>
    </UserProvider>
