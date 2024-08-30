@@ -4,6 +4,7 @@ import { CreateTodo, TodoList } from '@components';
 import { StatusProvider } from '@hooks';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { CustomAlert } from '@UI';
 
 export function Todo() {
   return (
@@ -12,6 +13,7 @@ export function Todo() {
             <StatusProvider>
                 <CreateTodo/>
                 <TodoList/>
+                <CustomAlert/>
             </StatusProvider>
         </LocalizationProvider>
     </div>

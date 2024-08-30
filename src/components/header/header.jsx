@@ -2,35 +2,44 @@
 import './header.scss';
 import { LocalStorageService } from "@services"
 import { useUser } from '@hooks'
+import { useNavigate } from 'react-router-dom';
 
 const localStorageService = new LocalStorageService()
 export function Header() {
   const { user, setUser } = useUser()
-
+  const navigate = useNavigate()
+  
   const exit = () => {
     localStorageService.removeUser();
     setUser();
   }
 
-  const userActions = [{name: 'exit', action: exit}]
+  const login = () => {
+    navigate("/user/login")
+  }
+
+  const userActions = [{name: 'Login', action: login, mustBeUser: false}, {name: 'exit', action: exit, mustBeUser: true}]
   return (
     <div className="header">
-      { user ?
-        <div className="user-info">
-          <h1 className='user-name'>{user?.username}</h1>
-          <div className="dropdown">
-            <ul>
-              {
-                userActions.map((action, index) =>
-                     <li onClick={action.action} key={index}>{action.name}</li>
-                )
-              }
-            </ul>
-          </div>
+      <div className="user-info">
+        <h1 className='user-name'>{user?.username ?? "Ви не увійшли в акаунт"}</h1>
+        <div className="dropdown">
+          <ul>
+            {
+              userActions.map((action, index) => {
+                if (!action.mustBeUser && !user) {
+                  return  <li onClick={action.action} key={index}>{action.name}</li>
+                } else if (action.mustBeUser && user) {
+                 return <li onClick={action.action} key={index}>{action.name}</li>
+                } else {
+                  null
+                }
+              }      
+              )
+            }
+          </ul>
+        </div>
       </div>
-        :
-          <h1>Ви не увійшли в акаунт</h1>
-      }
     </div>
   );
 }
