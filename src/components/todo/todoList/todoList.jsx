@@ -1,10 +1,8 @@
-
-import { CustomAlert } from '@UI';
 import { TodoItem } from '@components';
 import { useStatus } from '@hooks';
 import { TodoService } from '@services';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { InfinitySpin } from 'react-loader-spinner';
 import './todoList.scss';

@@ -4,13 +4,26 @@ import { useForm } from'react-hook-form';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import './createTodo.scss';
 import dayjs from 'dayjs';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const todoService = new TodoService()
 
 export function CreateTodo() {
-  const {setStatus, setTodos } = useStatus()
+  const { setStatus } = useStatus()
   const minDateTime = dayjs().add(1, 'hour');
-
+  const queryClient = useQueryClient()
+  const { mutate } = useMutation({
+    mutationKey: ['addTodo'],
+    mutationFn: (todo) => todoService.createNewTodo(todo),
+    onMutate: () => setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info')),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos'])
+      setStatus(todoService.autoSetStatus(false, 'Задачу успішно додано', 'success'))
+      reset()
+    },
+    onError: (error) => setStatus(todoService.autoSetStatus(false, error.message, 'error'))
+    }
+  )
   const {
     register,
     setValue,
@@ -28,18 +41,6 @@ export function CreateTodo() {
     }
   })
 
-  const addTodo = (todo) => {
-    setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info'))
-    todoService.createNewTodo(todo).then(data => {
-      setStatus(todoService.autoSetStatus(false, 'Задачу успішно додано', 'success'));
-      setTodos((prev) => [ ...prev, data]);
-      reset();
-    })
-    .catch (error => {
-    setStatus(todoService.autoSetStatus(false, error.message, 'error'))
-    })   
-  }
-
   const checkDate = (newDate) => {
     if (newDate && dayjs(newDate).isAfter(minDateTime)) {
       setValue("date", newDate);
@@ -53,7 +54,7 @@ export function CreateTodo() {
   }
 
   return (
-    <form onSubmit={handleSubmit(addTodo)}>
+    <form onSubmit={handleSubmit(mutate)}>
       <div className='create-todo'>
         <div className='field'>
           <label htmlFor="nameItem">Веддіть дію яку хочете зробити</label>
