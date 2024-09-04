@@ -11,7 +11,7 @@ const todoService = new TodoService()
 export function TodoList() {
   const { setStatus } = useStatus()
   const limitTodos = 10;
-  const {data, isLoading, error, isSuccess, isError, fetchNextPage, hasNextPage, isFetchingNextPage} = useInfiniteQuery({
+  const {data, isLoading, error, isSuccess, isError, isPending, fetchNextPage, hasNextPage, isFetchingNextPage} = useInfiniteQuery({
     queryKey: ["todos"],
     queryFn: ({pageParam = 1}) => {
       setStatus(todoService.autoSetStatus(isLoading));
@@ -20,7 +20,7 @@ export function TodoList() {
   })
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && !isPending) {
       setStatus(todoService.autoSetStatus(isLoading, 'Data loaded successfully', 'success'));
     }
     if (isError) {

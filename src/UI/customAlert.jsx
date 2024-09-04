@@ -17,7 +17,7 @@ export function CustomAlert () {
   }),[status.message, status.loading])
 
   if (!status.message) {
-    return <></>;
+    return null;
   }
 
   return (

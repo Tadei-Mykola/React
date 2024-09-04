@@ -4,14 +4,52 @@ import { useState, useEffect } from 'react';
 import { ConfirmationModal } from '@UI';
 import { TodoService } from '@services';
 import { useStatus } from '@hooks';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const todoService = new TodoService()
 export function TodoItem(props) {
   const [todo, setTodo] = useState(props.todo)
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false)
-  const {setStatus, todos, setTodos } = useStatus()
+  const { setStatus } = useStatus()
   const [isExpired, setIsExpired] = useState(false);
+  const queryClient = useQueryClient()
+
+  const { mutate: deleteTodo } = useMutation({
+    mutationKey: ['deleteTodo'],
+    mutationFn: () => todoService.deleteTodoById(todo.id),
+    onMutate: () => setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info')),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos'])
+      console.log(queryClient.getQueriesData(['todos']))
+      setStatus(todoService.autoSetStatus(false, 'Задачу видалено', 'success'))
+    },
+    onError: (error) => setStatus(todoService.autoSetStatus(false, error.message, 'error')),
+    onSettled: () => setModalIsOpen(false),
+  })
+
+  const { mutate: changeName } = useMutation({
+    mutationKey: ['changeTodo'],
+    mutationFn: () => todoService.updateTodo(todo.id, todo),
+    onMutate: () => setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info')),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos'])
+      setStatus(todoService.autoSetStatus(false, 'Задачу успішно оновлено', 'success'))
+    },
+    onError: (error) => setStatus(todoService.autoSetStatus(false, error.message, 'error')),
+    onSettled: () => setIsEditMode(false),
+  })
+
+  const { mutate: changeToDone } = useMutation({
+    mutationKey: ['changeTodo'],
+    mutationFn: () => todoService.updateTodo(todo.id, {...todo, isDone: true}),
+    onMutate: () => setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info')),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['todos'])
+      setStatus(todoService.autoSetStatus(false, 'Задачі змінено статус', 'success'))
+    },
+    onError: (error) => setStatus(todoService.autoSetStatus(false, error.message, 'error')),
+  })
 
   useEffect(() => {
     if (todo.date) {
@@ -21,42 +59,6 @@ export function TodoItem(props) {
     }
     setTodo(props.todo);
   }, [props.todo]);
-
-  
-  const deleteTodo = () => {
-    setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info'))
-    todoService.deleteTodoById(todo.id).then(() => {  
-      setStatus(todoService.autoSetStatus(false, 'Задачу видалено', 'success'))
-      setTodos(todos.filter(item => item.id!== todo.id))
-    })
-    .catch((error) => {
-      setStatus(todoService.autoSetStatus(false, error.message, 'error'))
-    })
-    setModalIsOpen(false)
-  }
-
-  const changeToDone = () => { 
-    setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info'))
-    todoService.updateTodo(todo.id, {...todo, isDone: true}).then((data) => {
-      setStatus(todoService.autoSetStatus(false, 'Задачу змінено статусом', 'success'))
-      setTodos(todos.map(item => item.id === todo.id ? data : item))
-    })
-    .catch((error) => {
-      setStatus(todoService.autoSetStatus(false, error.message, 'error'))
-    })
-  }
-
-  const changeName = () => {
-    setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info'))
-    todoService.updateTodo(todo.id, todo).then((data) => {
-      setStatus(todoService.autoSetStatus(false, 'Задачу успішно оновлено', 'success'))
-      setTodos(todos.map(item => item.id === todo.id ? data : item))
-    })
-    .catch((error) => {
-      setStatus(todoService.autoSetStatus(false, error.message, 'error'))
-    })
-    setIsEditMode(false)
-  }
 
   const changeTodo = (event) => {
     setTodo((prev) => ({...prev, name: event.target.value}))

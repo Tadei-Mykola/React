@@ -1,4 +1,5 @@
 import { createContext, useState, useContext } from 'react';
+import { CustomAlert } from '@UI';
 
 const StatusContext = createContext();
 
@@ -10,10 +11,10 @@ export function StatusProvider ({ children }) {
     message: "",
     severity: ""
   });
-  const [todos, setTodos] = useState([])
   return (
-    <StatusContext.Provider value={{ status, setStatus, todos, setTodos }}>
+    <StatusContext.Provider value={{ status, setStatus }}>
       {children}
+      <CustomAlert/>
     </StatusContext.Provider>
   );
 }
