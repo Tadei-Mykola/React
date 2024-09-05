@@ -20,8 +20,7 @@ export function TodoItem(props) {
     mutationFn: () => todoService.deleteTodoById(todo.id),
     onMutate: () => setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info')),
     onSuccess: () => {
-      queryClient.invalidateQueries(['todos'])
-      console.log(queryClient.getQueriesData(['todos']))
+      queryClient.fetchInfiniteQuery({ queryKey: ['todos'] })
       setStatus(todoService.autoSetStatus(false, 'Задачу видалено', 'success'))
     },
     onError: (error) => setStatus(todoService.autoSetStatus(false, error.message, 'error')),
@@ -33,7 +32,7 @@ export function TodoItem(props) {
     mutationFn: () => todoService.updateTodo(todo.id, todo),
     onMutate: () => setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info')),
     onSuccess: () => {
-      queryClient.invalidateQueries(['todos'])
+      queryClient.fetchInfiniteQuery({ queryKey: ['todos'] })
       setStatus(todoService.autoSetStatus(false, 'Задачу успішно оновлено', 'success'))
     },
     onError: (error) => setStatus(todoService.autoSetStatus(false, error.message, 'error')),
@@ -45,7 +44,7 @@ export function TodoItem(props) {
     mutationFn: () => todoService.updateTodo(todo.id, {...todo, isDone: true}),
     onMutate: () => setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info')),
     onSuccess: () => {
-      queryClient.invalidateQueries(['todos'])
+      queryClient.fetchInfiniteQuery({ queryKey: ['todos'] })
       setStatus(todoService.autoSetStatus(false, 'Задачі змінено статус', 'success'))
     },
     onError: (error) => setStatus(todoService.autoSetStatus(false, error.message, 'error')),

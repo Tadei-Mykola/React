@@ -17,7 +17,7 @@ export function CreateTodo() {
     mutationFn: (todo) => todoService.createNewTodo(todo),
     onMutate: () => setStatus(todoService.autoSetStatus(true, 'Очікування відповіді від сервера', 'info')),
     onSuccess: () => {
-      queryClient.invalidateQueries(['todos'])
+      queryClient.fetchInfiniteQuery({ queryKey: ['todos'] })
       setStatus(todoService.autoSetStatus(false, 'Задачу успішно додано', 'success'))
       reset()
     },
