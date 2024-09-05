@@ -1,18 +1,16 @@
 import './App.scss'
-import { CreateTodo, TodoList } from './components/index.js';
-import { StatusProvider } from './hooks/index.js';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { Layout } from './layout'
+import { UserProvider } from '@hooks';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 
 export default function App() {
-
+  const queryClient = new QueryClient()
 
   return ( 
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <StatusProvider>
-        <CreateTodo/>
-        <TodoList/>
-      </StatusProvider>
-    </LocalizationProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <Layout/>
+    </UserProvider>
+   </QueryClientProvider>
   );
-}
+} 
